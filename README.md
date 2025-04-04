@@ -1,2 +1,2 @@
 # Python-Projects
-make this sentence better These are the best python projects that i made , but good projects are coming soon
+Here are some of my best Python projects—but stay tuned, even better ones are on the way! 🚀
