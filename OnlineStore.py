@@ -9,29 +9,33 @@ items = {
 'iPad Pro': {'price': 800, 'quantity': 15}, 
  
 'Apple Watch Series 7': {'price': 600, 'quantity': 3}, 
-}
+} 
+ 
+   
 
 
 
-print("🏬 Welcome To YAHYA'S store 🏬")
+welcome_msg = "Welcome to Codezilla Store!"
 
 options = """
-Available Otions:
+Available Options:
 1. View Available Items
 2. View Cart
 3. Total Cart Price
 4. Clear Cart
 5. Quit
 """
+
 cart = {}
 
 
 def main():
+    print(welcome_msg)
     while True:
         print(options)
         choice = input("Enter the number of your choice: ")
         if choice == "1":
-            view_items()
+            view_available_items()
         elif choice == "2":
             view_cart()
         elif choice == "3":
@@ -39,107 +43,89 @@ def main():
         elif choice == "4":
             clear_cart()
         elif choice == "5":
-            print("Thank you for shopping at Yahya's Store! ")
-            view_cart()
             break
         else:
             print("Invalid choice, please enter a valid choice.")
-
-# helper function
-def total_calculate():
-    return sum(cart[item]["price"] * cart[item]["quantity"] for item in cart)
+            
 
 
+# function helper
+def total_calculator():
+    return sum(cart[item]["quantity"] * cart[item]["price"] for item in cart)
 
 
-def view_items():
+
+
+
+def view_available_items():
     items_name = []
-    # print the available items
-    for i,item in enumerate(items,1):
+    for i, item  in enumerate(items,1) :
         items_name.append(item)
         items_quantity = items[item]["quantity"]
         if items_quantity == 0:
-            print(f"{i}. {item} (Out of stock)")
+            print(f"{i}. {item} (Not available)")
         else:
             print(f"{i}. {item}")
     try:
-        # ask user for the item that he/she wants
-        item_choice = int(input("Number of the item to purchase (Enter 0 to return to previous menu): "))
-        if item_choice == 0:
+        item_purshase = int(input("Enter the number of the item to purshase (Enter 0 to return to previous menu):"))
+        if item_purshase == 0:
             return
-        # print to the user the available quantity of the chosen item
-        user_item = items_name[item_choice - 1]
-    except IndexError:
-        print("Please Enter a number between 1 and 5.")
-    except ValueError:
-        print("Please Enter a number between 1 and 5.")
-    # end of the fixing problems for the list
-    try:
-        available_quantity = items[user_item]["quantity"]
-        print(f"Available quantity: {available_quantity} ")
-        quantity = int(input("Please, Enter the quantity: "))
-        if quantity > available_quantity:
-            print(f"Sorry, we only have {available_quantity} of this item. ")
+        if 1 <= item_purshase <= len(items_name):
+            user_choice = items_name[item_purshase - 1]
+            available_quantity = items[user_choice]["quantity"]
+            print(f"Available quantity: {available_quantity}")
+            try:
+                chosen_quantity = int(input("Please, Enter the quantity: "))
+                if chosen_quantity > available_quantity:
+                    print(f"Sorry, we only have {available_quantity} of this item.")
+                else:
+                    item_price = items[user_choice]["price"]
+                    cart[user_choice] = {"price": item_price,"quantity": chosen_quantity}
+                    print(f"{user_choice} has been added to cart successfully.")
+                    # reduce the stock
+                    items[user_choice]["quantity"] -= chosen_quantity
+
+            except ValueError:
+                input("Please, enter a valid number for quantity ")
         else:
-            # reduce the quanity that the user entred from items
-            items[user_item]["quantity"] -= quantity
-            # check if item is in the cart else add it to the cart
-            if user_item in cart:
-                cart[user_item]["quantity"] += quantity
-            else:
-                cart[user_item] = {"price": items[user_item]["price"] , 
-                                "quantity": quantity }
+            print("Please , enter a number between 1 and 5.")
     except ValueError:
-        print("Please Enter the number of the available quantity. ")
+        print("Please , enter a valid number.")
 
 
-    
 def view_cart():
-    # view the items that the user purchased
     if cart:
-        print("Cart: ")
         print("-"*25)
-        total_sum = 0
-        for cart_items in cart:
-            price = cart[cart_items]['price']
-            quantity = cart[cart_items]['quantity']
-            total = price * quantity
-            total_sum += total
-            print(f"{cart_items}: ${price} x {quantity} = ${total:.2f}")
+        for item in cart:
+            item_price = cart[item]["price"]
+            item_quantity = cart[item]["quantity"]
+            print(f"{item}: ${item_price} x {item_quantity} = ${item_price * item_quantity}")
         print("-"*25)
-        print(f"Total Price of Cart: ${total_calculate():.2f}")
-    else:
-        print("No items have been bought.")
 
+    else:
+        print("Cart is empty, go buy an item from the shop !")
 
 def total_cart_price():
     if cart:
-            print(f"Total Price of Cart: ${total_calculate():.2f}")
+        print(f"Total Price of Cart: ${total_calculator():.2f}")
     else:
-        print("No items have been bought")
+        print("You didn't buy anything yet !")
 
 
 
 def clear_cart():
     if cart:
-        print("Items in the Cart Before clearing it: ")
+        print("Items in the cart before clearing it:")
+        print("Cart:")
         view_cart()
-        checkig_sys = input("Are you sure you want to clear the cart?: (y/n): ").lower()
-        if checkig_sys == "n":
-            return
-        else:
-            # restoring the the old quantity 
-            for cart_item in cart:
-                items[cart_item]["quantity"] += cart[cart_item]["quantity"]
+        checking_sys = input("Are you sure you want to clear the cart? (y/n): ").lower()
+        if checking_sys == "y":
             cart.clear()
-            print("Cart has been cleared succesfully !")
+            print("Cart has been cleared successfully.")
+        else:
+            return
     else:
-        print("No items have been bought !")
-
-
-
-
-
+        print("Cart is empty , there is nothing to clear !")
 
 if __name__ == "__main__":
     main()
